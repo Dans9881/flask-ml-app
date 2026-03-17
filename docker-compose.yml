@@ -1,23 +1,21 @@
+version: "3.8"
+
 services:
-  flask-ml-app:
+  flask-ml:
     build: .
-    container_name: flask_ml_app
+    container_name: flask-ml
+    restart: unless-stopped
 
     networks:
       - web
 
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.flask.rule=Host(`ml.danzserver.my.id`)"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.flask.rule=Host(`flask.kuyen.online`)"
       - "traefik.http.routers.flask.entrypoints=websecure"
-      - "traefik.http.routers.flask.tls=true"
+      - "traefik.http.routers.flask.tls.certresolver=letsencrypt"
       - "traefik.http.services.flask.loadbalancer.server.port=5000"
-
-    environment:
-      - FLASK_ENV=development
-      - FLASK_APP=app.py
-
-    restart: unless-stopped
 
 networks:
   web:
