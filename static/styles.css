@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+    background: #f0f2f5;
+    background-image: radial-gradient(#e1e8ed 1px, transparent 1px);
+    background-size: 20px 20px;
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #2c3e50;
+}
+
+main {
+    flex: 1;
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    padding: 1rem 2rem;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-size: 1.5rem;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    font-weight: 600;
+}
+
+/* Hero Section */
+.hero-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-left: 5px solid #1e3c72;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 50px;
+    padding: 0.6rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #606c88 0%, #3f4c6b 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(96, 108, 136, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(96, 108, 136, 0.4);
+}
+
+.btn-outline-light {
+    border: 2px solid rgba(255,255,255,0.8);
+}
+
+.btn-outline-light:hover {
+    background: white;
+    color: #1e3c72;
+}
+
+/* File Input - Dropzone Look */
+.custom-file-upload {
+    border: 2px dashed #cbd5e0;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #f8fafc;
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.custom-file-upload:hover {
+    border-color: #1e3c72;
+    background: #eef2f7;
+}
+
+.custom-file-upload input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-icon {
+    font-size: 2.5rem;
+    color: #1e3c72;
+    margin-bottom: 1rem;
+}
+
+.upload-text {
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.file-name {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #28a745;
+    font-weight: 600;
+}
+
+/* Results */
+.result-img-container {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+}
+
+.result-img-container img {
+    transition: transform 0.5s;
+    width: 100%;
+}
+
+.result-img-container:hover img {
+    transform: scale(1.05);
+}
+
+.badge-result {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Footer */
+footer {
+    background: #ffffff;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Process Steps for Segmentation */
+.step-card {
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    background: #1e3c72;
+    color: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }

@@ -1,0 +1,5 @@
+__pycache__/
+uploads_copy/
+web-engine/static/model/*.h5
+static/model/
+.vscode/

@@ -1,0 +1,143 @@
+<div class="text-center mb-5 animate-fade-in">
+    <div class="mb-3">
+        <span class="badge" style="background: linear-gradient(135deg, var(--secondary), #a78bfa); padding: 0.5rem 1.5rem; border-radius: 50px;">
+            <i class="fas fa-brain me-2"></i>VGG-19 Neural Network
+        </span>
+    </div>
+    <h2 class="fw-bold mb-2" style="color: var(--gray-900);">Classification Result</h2>
+    <p class="text-muted">Deep learning based diagnostic analysis</p>
+</div>
+
+<div class="row justify-content-center animate-fade-in delay-1">
+    <div class="col-lg-10 col-xl-9">
+        <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+            <div class="row g-0">
+                <!-- Image Section -->
+                <div class="col-md-5" style="background: linear-gradient(135deg, var(--gray-50), white);">
+                    <div class="p-4 h-100 d-flex flex-column justify-content-center">
+                        <div class="text-center mb-3">
+                            <small class="text-muted fw-semibold text-uppercase" style="letter-spacing: 1px; font-size: 0.75rem;">
+                                Analyzed Image
+                            </small>
+                        </div>
+                        <div style="border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.12);">
+                            <img src="{{url_for('static', filename='uploads/vgg/citra.png')}}" class="img-fluid w-100" alt="Analyzed X-Ray">
+                        </div>
+                        <div class="mt-3 text-center">
+                            <small class="text-muted">
+                                <i class="fas fa-x-ray me-1"></i>Chest X-Ray Input
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div class="col-md-7 p-5 d-flex flex-column justify-content-center">
+                    <div class="mb-4">
+                        <small class="text-muted fw-semibold text-uppercase d-block mb-2" style="letter-spacing: 1px; font-size: 0.75rem;">
+                            <i class="fas fa-microscope me-2"></i>Diagnostic Assessment
+                        </small>
+                        <div class="border-start border-4 ps-3" style="border-color: {% if resultPred == 'COVID' %}var(--danger){% elif resultPred == 'Normal' %}var(--success){% else %}var(--warning){% endif %} !important;">
+                            {% if resultPred == 'COVID' %}
+                                <h1 class="display-5 fw-bold mb-0" style="color: var(--danger);">
+                                    <i class="fas fa-virus me-3"></i>COVID-19
+                                </h1>
+                            {% elif resultPred == 'Normal' %}
+                                <h1 class="display-5 fw-bold mb-0" style="color: var(--success);">
+                                    <i class="fas fa-heart-pulse me-3"></i>Normal
+                                </h1>
+                            {% else %}
+                                <h1 class="display-5 fw-bold mb-0" style="color: var(--warning);">
+                                    <i class="fas fa-lungs me-3"></i>Pneumonia
+                                </h1>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Alert Box -->
+                    {% if resultPred == 'COVID' %}
+                        <div class="alert border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05)); border-left: 4px solid var(--danger) !important;">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-exclamation-circle fa-2x me-3" style="color: var(--danger);"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-2" style="color: var(--danger);">High Probability Detection</h6>
+                                    <p class="mb-0 small text-muted">
+                                        The VGG-19 model has identified radiological patterns consistent with COVID-19 infection. Immediate medical consultation is recommended.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif resultPred == 'Normal' %}
+                        <div class="alert border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); border-left: 4px solid var(--success) !important;">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-check-circle fa-2x me-3" style="color: var(--success);"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-2" style="color: var(--success);">No Abnormalities Detected</h6>
+                                    <p class="mb-0 small text-muted">
+                                        The lung tissue appears clear based on the model's radiological assessment. No significant pathological indicators identified.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05)); border-left: 4px solid var(--warning) !important;">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-notes-medical fa-2x me-3" style="color: var(--warning);"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-2" style="color: var(--warning);">Pneumonia Indicators Present</h6>
+                                    <p class="mb-0 small text-muted">
+                                        The model has detected radiological signs suggesting pneumonia. Further evaluation by a pulmonary specialist is advised.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Model Info -->
+                    <div class="p-3 rounded mb-4" style="background: var(--gray-50); border: 1px solid var(--gray-200);">
+                        <div class="row g-3 text-center">
+                            <div class="col-4">
+                                <i class="fas fa-network-wired d-block mb-2" style="color: var(--secondary); font-size: 1.5rem;"></i>
+                                <small class="text-muted d-block">Architecture</small>
+                                <strong class="small">VGG-19</strong>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-layer-group d-block mb-2" style="color: var(--secondary); font-size: 1.5rem;"></i>
+                                <small class="text-muted d-block">Layers</small>
+                                <strong class="small">19 Deep</strong>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-sitemap d-block mb-2" style="color: var(--secondary); font-size: 1.5rem;"></i>
+                                <small class="text-muted d-block">Classes</small>
+                                <strong class="small">3 Types</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="/" class="btn btn-outline-secondary flex-fill">
+                            <i class="fas fa-redo me-2"></i>New Analysis
+                        </a>
+                        <button class="btn btn-outline-secondary" onclick="window.print()">
+                            <i class="fas fa-print"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="mt-4 p-3 rounded animate-fade-in delay-2" style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2);">
+            <div class="d-flex align-items-start">
+                <i class="fas fa-shield-alt me-3" style="color: var(--secondary); font-size: 1.25rem;"></i>
+                <div>
+                    <h6 class="fw-bold mb-1" style="color: var(--secondary);">Clinical Note</h6>
+                    <p class="text-muted small mb-0">
+                        This AI-generated result is designed to assist medical professionals and should not be used as the sole basis for diagnosis. Always consult with qualified healthcare providers for comprehensive medical evaluation.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    {% if type_test %}
+        <!-- Back Button -->
+        <div class="mb-4 animate-fade-in">
+            <a href="/" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+        </div>
+        
+        <!-- Results Container -->
+        <div class="glass-container p-4 p-md-5 animate-fade-in delay-1">
+            {% if type_test|string() == 'simple' %}
+                {% include 'simple.html' %}
+            {% elif type_test|string() == 'advance' and type_model|string() == 'unet' %}
+                {% include 'segmentation_page.html' %}
+            {% elif type_test|string() == 'advance' and type_model|string() == 'vgg' %}
+                {% include 'classification_page.html' %}
+            {% endif %}
+        </div>
+
+    {% else %}
+        <!-- Hero Section -->
+        <div class="glass-container p-5 mb-5 animate-fade-in">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7">
+                    <div class="mb-3">
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                            <i class="fas fa-atom me-2"></i>AI-Powered Medical Research
+                        </span>
+                    </div>
+                    <h1 class="display-4 fw-bold mb-4" style="color: var(--gray-900);">
+                        Intelligent COVID-19 
+                        <span style="background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            Detection Platform
+                        </span>
+                    </h1>
+                    <p class="lead text-muted mb-4">
+                        Leveraging advanced deep learning architectures for rapid, accurate analysis of chest X-ray images. Built for medical research and clinical decision support.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="#test-section" class="btn btn-primary btn-lg">
+                            <i class="fas fa-flask me-2"></i>Start Analysis
+                        </a>
+                        <button class="btn btn-outline-secondary btn-lg" data-bs-toggle="modal" data-bs-target="#aboutModal">
+                            <i class="fas fa-book-medical me-2"></i>Learn More
+                        </button>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="row mt-5 g-4">
+                        <div class="col-4">
+                            <div class="text-center">
+                                <h3 class="fw-bold mb-1" style="color: var(--primary);">2</h3>
+                                <small class="text-muted">AI Models</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center">
+                                <h3 class="fw-bold mb-1" style="color: var(--secondary);">3</h3>
+                                <small class="text-muted">Detection Classes</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center">
+                                <h3 class="fw-bold mb-1" style="color: var(--success);">Fast</h3>
+                                <small class="text-muted">Processing</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 text-center">
+                    <div style="font-size: 15rem; opacity: 0.1; color: var(--primary);">
+                        <i class="fas fa-lungs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div id="test-section" class="row g-4">
+            <!-- Simple Test Card -->
+            <div class="col-lg-6 animate-fade-in delay-2">
+                <div class="card h-100">
+                    <div class="card-header text-center">
+                        <div class="mb-3">
+                            <div class="d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(139, 92, 246, 0.1)); border-radius: 20px;">
+                                <i class="fas fa-magic fa-2x" style="color: var(--primary);"></i>
+                            </div>
+                        </div>
+                        <h3 class="fw-bold mb-2">Comprehensive Analysis</h3>
+                        <p class="text-muted mb-0">Full diagnostic pipeline with segmentation and classification</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3" style="color: var(--gray-700);">
+                                <i class="fas fa-check-circle text-success me-2"></i>What's Included:
+                            </h6>
+                            <ul class="list-unstyled ms-4">
+                                <li class="mb-2"><i class="fas fa-angle-right text-primary me-2"></i>U-Net lung segmentation</li>
+                                <li class="mb-2"><i class="fas fa-angle-right text-primary me-2"></i>VGG-19 classification</li>
+                                <li class="mb-2"><i class="fas fa-angle-right text-primary me-2"></i>Multiple scenario analysis</li>
+                                <li class="mb-2"><i class="fas fa-angle-right text-primary me-2"></i>Detailed visual results</li>
+                            </ul>
+                        </div>
+                        
+                        <form action="/simple" method="post" enctype="multipart/form-data">
+                            <div class="custom-file-upload mb-3">
+                                <input type="file" name="filesImage" id="simpleFile" required accept="image/*">
+                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                <div class="upload-text">Upload Chest X-Ray</div>
+                                <small class="text-muted d-block mt-2">PNG, JPG or JPEG format</small>
+                                <div class="file-name"></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 btn-lg">
+                                <i class="fas fa-rocket me-2"></i>Run Full Analysis
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Test Card -->
+            <div class="col-lg-6 animate-fade-in delay-3">
+                <div class="card h-100">
+                    <div class="card-header text-center">
+                        <div class="mb-3">
+                            <div class="d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1)); border-radius: 20px;">
+                                <i class="fas fa-sliders-h fa-2x" style="color: var(--secondary);"></i>
+                            </div>
+                        </div>
+                        <h3 class="fw-bold mb-2">Targeted Analysis</h3>
+                        <p class="text-muted mb-0">Select specific model for focused testing</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3" style="color: var(--gray-700);">
+                                <i class="fas fa-cog text-secondary me-2"></i>Model Options:
+                            </h6>
+                            <ul class="list-unstyled ms-4">
+                                <li class="mb-2"><i class="fas fa-angle-right text-secondary me-2"></i>U-Net segmentation only</li>
+                                <li class="mb-2"><i class="fas fa-angle-right text-secondary me-2"></i>VGG-19 classification only</li>
+                                <li class="mb-2"><i class="fas fa-angle-right text-secondary me-2"></i>Faster processing</li>
+                                <li class="mb-2"><i class="fas fa-angle-right text-secondary me-2"></i>Specialized research use</li>
+                            </ul>
+                        </div>
+                        
+                        <form action="/advance" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-muted small">SELECT AI MODEL</label>
+                                <select class="form-select form-select-lg" name="modelSelect" required style="border-radius: 12px; border: 2px solid var(--gray-200);">
+                                    <option value="" selected disabled>Choose model architecture...</option>
+                                    <option value="unet">
+                                        <i class="fas fa-project-diagram"></i> U-Net Segmentation
+                                    </option>
+                                    <option value="vgg">
+                                        <i class="fas fa-brain"></i> VGG-19 Classification
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <div class="custom-file-upload mb-3">
+                                <input type="file" name="filesImage" id="advanceFile" required accept="image/*">
+                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                <div class="upload-text">Upload Chest X-Ray</div>
+                                <small class="text-muted d-block mt-2">PNG, JPG or JPEG format</small>
+                                <div class="file-name"></div>
+                            </div>
+                            <button type="submit" class="btn btn-secondary w-100 btn-lg" style="background: linear-gradient(135deg, var(--secondary), #a78bfa);">
+                                <i class="fas fa-play me-2"></i>Run Targeted Test
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Research Note -->
+        <div class="glass-container p-4 mt-5 animate-fade-in delay-3">
+            <div class="row align-items-center">
+                <div class="col-md-1 text-center">
+                    <i class="fas fa-shield-alt fa-2x" style="color: var(--primary);"></i>
+                </div>
+                <div class="col-md-11">
+                    <h6 class="fw-bold mb-2">Research & Clinical Use</h6>
+                    <p class="text-muted mb-0 small">
+                        This platform is designed for research purposes and clinical decision support. All diagnostic results should be reviewed by qualified medical professionals. The AI models provide preliminary analysis to assist, not replace, expert medical judgment.
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

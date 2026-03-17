@@ -1,0 +1,24 @@
+services:
+  flask-ml-app:
+    build: .
+    container_name: flask_ml_app
+
+    networks:
+      - web
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.flask.rule=Host(`ml.danzserver.my.id`)"
+      - "traefik.http.routers.flask.entrypoints=websecure"
+      - "traefik.http.routers.flask.tls=true"
+      - "traefik.http.services.flask.loadbalancer.server.port=5000"
+
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+
+    restart: unless-stopped
+
+networks:
+  web:
+    external: true
