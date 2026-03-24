@@ -6,6 +6,9 @@ services:
     container_name: flask-ml
     restart: unless-stopped
 
+    volumes:
+      - ./static/model:/app/static/model
+
     networks:
       - web
 

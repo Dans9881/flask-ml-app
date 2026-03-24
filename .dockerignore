@@ -27,3 +27,5 @@ README.md
 *.swp
 *.swo
 *~
+static/model/*.h5
+models/
