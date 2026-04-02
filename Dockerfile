@@ -1,41 +1,31 @@
-# Use Python 3.7 slim image for minimal size
-FROM python:3.7-slim-buster
+FROM python:3.8-slim
 
-# Set working directory
 WORKDIR /app
 
-# Fix Debian Buster EOL - use archive repositories
-RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list && \
-    sed -i 's|security.debian.org|archive.debian.org|g' /etc/apt/sources.list && \
-    sed -i '/stretch-updates/d' /etc/apt/sources.list && \
-    sed -i '/buster-updates/d' /etc/apt/sources.list
-
-# Install system dependencies required for OpenCV and TensorFlow
+# System deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
     libxrender-dev \
     libgomp1 \
-    libgl1-mesa-glx \
+    libgl1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements file
+# Install deps
 COPY requirements.txt .
-
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt && \
-    pip uninstall -y keras keras-nightly || true
+    pip install --no-cache-dir gdown
 
-# Copy project files
+# Copy source dulu (biar folder static/model ada)
 COPY . .
 
-# Expose Flask default port
-EXPOSE 5000
+# Download model ke path lama
+RUN mkdir -p /app/static/model && \
+    cd /app/static/model && \
+    gdown --id 1L7YPV3SLl08X6otuV1epolnwh1tGNEsq && \
+    gdown --id 1RgNc29CR98pcg3krGxA784Zxv2xx93pQ
 
-# Set environment variables
-ENV FLASK_APP=app.py
 ENV PYTHONUNBUFFERED=1
 
-# Run the application
 CMD ["python", "app.py"]

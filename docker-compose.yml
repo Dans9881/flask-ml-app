@@ -1,13 +1,8 @@
-version: "3.8"
-
 services:
   flask-ml:
-    build: .
+    image: dans9881/flask-ml:latest
     container_name: flask-ml
     restart: unless-stopped
-
-    volumes:
-      - ./static/model:/app/static/model
 
     networks:
       - web
