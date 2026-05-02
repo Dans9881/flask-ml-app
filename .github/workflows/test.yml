@@ -10,6 +10,4 @@ jobs:
       - name: test
         run: |
           whoami
-          export KUBECONFIG=
-          kubectl config view
-          kubectl get pods -A
+          kubectl --kubeconfig=/dev/null get pods -A
