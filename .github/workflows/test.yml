@@ -10,4 +10,4 @@ jobs:
       - name: test
         run: |
           whoami
-          kubectl --kubeconfig=/dev/null get pods -A
+          kubectl get pods -A
