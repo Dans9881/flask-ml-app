@@ -10,4 +10,4 @@ jobs:
 
     steps:
       - name: Check runner
-        run: echo "Runner works brooooo"
+        run: echo "Runner works brooooo Anjayyyyy mabarrrrr"
