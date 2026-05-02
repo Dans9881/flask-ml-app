@@ -1,33 +1,13 @@
-name: Build & Push (Kaniko)
+name: test-runner
 
-on:
-  push:
-    branches: ["main"]
+on: [push]
 
 jobs:
-  build:
+  test:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Apply Kaniko Pod
+      - name: test
         run: |
-          kubectl apply -f k8s/infra/ci-runner/base/kaniko-pod.yaml
-
-      - name: Wait Pod Ready
-        run: |
-          kubectl wait --for=condition=Ready pod/kaniko-build -n actions-runner --timeout=60s
-
-      - name: Copy Source
-        run: |
-          kubectl cp . actions-runner/kaniko-build:/workspace
-
-      - name: Build Logs
-        run: |
-          kubectl logs -f kaniko-build -n actions-runner
-
-      - name: Cleanup
-        run: |
-          kubectl delete pod kaniko-build -n actions-runner
+          whoami
+          kubectl get pods -A
