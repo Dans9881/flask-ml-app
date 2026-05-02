@@ -11,12 +11,42 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # =========================
+      # INSTALL BUILDCTL
+      # =========================
+      - name: Install buildctl
+        run: |
+          curl -L https://github.com/moby/buildkit/releases/latest/download/buildkit-v0.12.5.linux-amd64.tar.gz \
+          | tar -xz
+          mv bin/buildctl /usr/local/bin/
+
+      # =========================
+      # SET IMAGE TAG
+      # =========================
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      # =========================
+      # BUILD & PUSH
+      # =========================
       - name: Build & Push (BuildKit)
         run: |
           buildctl build \
             --frontend dockerfile.v0 \
             --local context=. \
             --local dockerfile=. \
-            --output type=image,name=docker.io/dans9881/flask-ml:latest,push=true \
+            --output type=image,name=docker.io/dans9881/flask-ml:${IMAGE_TAG},push=true \
             --export-cache type=registry,ref=docker.io/dans9881/flask-ml:cache \
+            --import-cache type=registry,ref=docker.io/dans9881/flask-ml:cache
+
+      # =========================
+      # TAG LATEST (OPTIONAL)
+      # =========================
+      - name: Tag latest
+        run: |
+          buildctl build \
+            --frontend dockerfile.v0 \
+            --local context=. \
+            --local dockerfile=. \
+            --output type=image,name=docker.io/dans9881/flask-ml:latest,push=true \
             --import-cache type=registry,ref=docker.io/dans9881/flask-ml:cache
