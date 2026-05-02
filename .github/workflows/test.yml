@@ -1,14 +1,11 @@
-name: Test Runner
+name: test-runner
 
 on: [push]
 
 jobs:
   test:
-    runs-on: self-hosted
+    runs-on: [self-hosted, k8s]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Test
-        run: echo "Runner jalan bro!"
+      - name: Check runner
+        run: echo "Runner works brooooo"
