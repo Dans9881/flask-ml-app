@@ -1,13 +1,22 @@
-name: test-runner
+name: build-and-push
 
 on:
   push:
   workflow_dispatch:
 
 jobs:
-  test:
+  build:
     runs-on: [self-hosted, k8s]
 
     steps:
-      - name: Check runner
-        run: echo "Runner works brooooo Anjayyyyy mabarrrrr"
+      - uses: actions/checkout@v4
+
+      - name: Build & Push (BuildKit)
+        run: |
+          buildctl build \
+            --frontend dockerfile.v0 \
+            --local context=. \
+            --local dockerfile=. \
+            --output type=image,name=docker.io/dans9881/flask-ml:latest,push=true \
+            --export-cache type=registry,ref=docker.io/dans9881/flask-ml:cache \
+            --import-cache type=registry,ref=docker.io/dans9881/flask-ml:cache
