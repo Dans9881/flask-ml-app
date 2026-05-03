@@ -16,13 +16,12 @@ jobs:
         run: |
           mkdir -p /kaniko/.docker
 
-          AUTH=$(echo -n "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" | base64)
-
           cat <<EOF > /kaniko/.docker/config.json
           {
             "auths": {
               "index.docker.io": {
-                "auth": "$AUTH"
+                "username": "${{ secrets.DOCKER_USERNAME }}",
+                "password": "${{ secrets.DOCKER_PASSWORD }}"
               }
             }
           }
