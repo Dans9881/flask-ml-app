@@ -1,25 +1,22 @@
-name: Build Image (Kaniko)
+name: Build Image (Kaniko Inline)
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: self-hosted
 
-    env:
-      DOCKER_CONFIG: /kaniko/.docker
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Docker Auth
+      - name: Setup Docker auth
         run: |
-          mkdir -p /kaniko/.docker
-
-          cat <<EOF > /kaniko/.docker/config.json
+          mkdir -p /tmp/.docker
+          cat > /tmp/.docker/config.json <<EOF
           {
             "auths": {
               "https://index.docker.io/v1/": {
@@ -29,15 +26,14 @@ jobs:
             }
           }
           EOF
+          export DOCKER_CONFIG=/tmp/.docker
 
-          echo "=== CONFIG ==="
-          cat /kaniko/.docker/config.json
-
-      - name: Build & Push
+      - name: Build & Push with Kaniko
         run: |
-          /usr/local/bin/kaniko-executor \
-            --dockerfile=$GITHUB_WORKSPACE/Dockerfile \
-            --context=$GITHUB_WORKSPACE \
-            --destination=index.docker.io/dans9881/flask-ml-app:latest \
-            --destination=index.docker.io/dans9881/flask-ml-app:${{ github.sha }} \
-            --verbosity=debug
+          export DOCKER_CONFIG=/tmp/.docker
+          kaniko-executor \
+            --context $GITHUB_WORKSPACE \
+            --dockerfile $GITHUB_WORKSPACE/Dockerfile \
+            --destination=dans9881/flask-ml-app:latest \
+            --destination=dans9881/flask-ml-app:${{ github.sha }} \
+            --verbosity=info
