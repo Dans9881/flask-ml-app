@@ -12,12 +12,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 🔐 Setup Docker Auth (FINAL FIX)
       - name: Setup Docker Auth
         run: |
           mkdir -p /kaniko/.docker
 
-          AUTH=$(echo -n "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" | base64 | tr -d '\n')
+          AUTH=$(echo -n "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" | base64)
 
           cat <<EOF > /kaniko/.docker/config.json
           {
@@ -29,27 +28,17 @@ jobs:
           }
           EOF
 
-      # 🔍 DEBUG: cek config
-      - name: Debug Config
-        run: |
           echo "=== CONFIG ==="
           cat /kaniko/.docker/config.json
 
-      # 🔍 DEBUG: cek panjang secret
-      - name: Debug Secret Length
-        env:
-          PASS: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Test Auth (IMPORTANT)
         run: |
-          echo "PASS LENGTH: ${#PASS}"
+          AUTH=$(echo -n "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" | base64)
 
-      # 🔍 DEBUG: test login ke Docker Hub (REAL CHECK)
-      - name: Debug Docker Login
-        run: |
-          echo "=== TEST LOGIN ==="
-          curl -v -u "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" https://index.docker.io/v2/ || true
+          curl -v -H "Authorization: Basic $AUTH" \
+            https://index.docker.io/v2/dans9881/flask-ml-app/tags/list
 
-      # 🚀 BUILD & PUSH
-      - name: Build & Push Image
+      - name: Build & Push
         run: |
           /usr/local/bin/kaniko-executor \
             --dockerfile=$GITHUB_WORKSPACE/Dockerfile \
