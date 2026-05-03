@@ -1,4 +1,4 @@
-name: build-and-push-yesting
+name: build-and-push-test
 
 on:
   push:
