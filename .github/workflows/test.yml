@@ -19,38 +19,23 @@ jobs:
             --docker-username=${{ secrets.DOCKER_USERNAME }} \
             --docker-password=${{ secrets.DOCKER_PASSWORD }} \
             --docker-server=index.docker.io \
-            --dry-run=client -o yaml | kubectl apply -n actions-runner -f -
+            -n actions-runner \
+            --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Run Kaniko Build Job
+      - name: Apply Kaniko Job
         run: |
-          cat <<EOF | kubectl apply -f -
-          apiVersion: batch/v1
-          kind: Job
-          metadata:
-            name: kaniko-build-${{ github.run_id }}
-            namespace: actions-runner
-          spec:
-            backoffLimit: 0
-            template:
-              spec:
-                restartPolicy: Never
-                containers:
-                  - name: kaniko
-                    image: gcr.io/kaniko-project/executor:latest
-                    args:
-                      - "--dockerfile=/workspace/Dockerfile"
-                      - "--context=git://github.com/${{ github.repository }}#${{ github.sha }}"
-                      - "--destination=dans9881/flask-ml-app:latest"
-                      - "--destination=dans9881/flask-ml-app:${{ github.sha }}"
-                      - "--verbosity=info"
-                    volumeMounts:
-                      - name: docker-config
-                        mountPath: /kaniko/.docker
-                volumes:
-                  - name: docker-config
-                    secret:
-                      secretName: dockerhub-secret
-          EOF
+          export IMAGE_TAG=${{ github.sha }}
+          export JOB_NAME=kaniko-build-${{ github.run_id }}
+
+          envsubst < k8s/infra/ci-runner/base/kaniko-job.yaml \
+          | sed "s/name: kaniko-build/name: $JOB_NAME/g" \
+          | kubectl apply -f -
+
+      - name: Copy source to Kaniko pod
+        run: |
+          sleep 5
+          POD=$(kubectl get pods -n actions-runner -l job-name=kaniko-build-${{ github.run_id }} -o jsonpath="{.items[0].metadata.name}")
+          kubectl cp . actions-runner/$POD:/workspace
 
       - name: Wait for Job Completion
         run: |
