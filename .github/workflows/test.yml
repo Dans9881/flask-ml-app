@@ -1,4 +1,4 @@
-name: Build Image KANIKO
+name: Build Image testing kaniko
 
 on:
   push:
@@ -16,13 +16,12 @@ jobs:
         run: |
           mkdir -p /kaniko/.docker
 
-          AUTH=$(echo -n "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" | base64)
-
           cat <<EOF > /kaniko/.docker/config.json
           {
             "auths": {
               "https://index.docker.io/v1/": {
-                "auth": "$AUTH"
+                "username": "${{ secrets.DOCKER_USERNAME }}",
+                "password": "${{ secrets.DOCKER_PASSWORD }}"
               }
             }
           }
