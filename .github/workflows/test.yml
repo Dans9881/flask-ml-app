@@ -1,4 +1,4 @@
-name: Build Image (Kaniko) anjayyyyyy
+name: Build Image (Kaniko)
 
 on:
   push:
@@ -15,12 +15,13 @@ jobs:
       - name: Setup Docker Auth
         run: |
           mkdir -p $GITHUB_WORKSPACE/.kaniko/.docker
+          AUTH=$(echo -n "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" | base64)
+
           cat <<EOF > $GITHUB_WORKSPACE/.kaniko/.docker/config.json
           {
             "auths": {
               "https://index.docker.io/v1/": {
-                "username": "${{ secrets.DOCKER_USERNAME }}",
-                "password": "${{ secrets.DOCKER_PASSWORD }}"
+                "auth": "$AUTH"
               }
             }
           }
@@ -28,7 +29,7 @@ jobs:
 
       - name: Build & Push Image
         run: |
-          kaniko-executor \
+          /kaniko/executor \
             --dockerfile=$GITHUB_WORKSPACE/Dockerfile \
             --context=$GITHUB_WORKSPACE \
             --destination=dans9881/flask-ml-app:latest \
