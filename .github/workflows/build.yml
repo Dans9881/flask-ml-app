@@ -1,0 +1,36 @@
+name: Build & Push Image (Kaniko)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set IMAGE_TAG
+        run: echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
+
+      - name: Apply Kaniko Job
+        run: |
+          sed "s/\${IMAGE_TAG}/${IMAGE_TAG}/g" kaniko-job.yaml | \
+          kubectl apply -n actions-runner -f -
+
+      - name: Wait Job
+        run: |
+          kubectl wait --for=condition=complete job/kaniko-build \
+            -n actions-runner --timeout=300s
+
+      - name: Logs
+        run: |
+          kubectl logs job/kaniko-build -n actions-runner
+
+      - name: Cleanup
+        if: always()
+        run: |
+          kubectl delete job kaniko-build -n actions-runner
