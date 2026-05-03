@@ -1,4 +1,4 @@
-name: Build Image only kaniko
+name: Build Image (Kaniko)
 
 on:
   push:
@@ -26,25 +26,11 @@ jobs:
           }
           EOF
 
-      - name: Check Python
-        run: |
-          python3 --version
-
-      - name: Download Kaniko Executor
-        run: |
-          echo "import urllib.request
-          url = 'https://github.com/GoogleContainerTools/kaniko/releases/download/v1.23.2/executor-linux-amd64'
-          output = '${GITHUB_WORKSPACE}/kaniko-executor'
-          urllib.request.urlretrieve(url, output)" > download.py
-
-          python3 download.py
-          chmod +x $GITHUB_WORKSPACE/kaniko-executor
-
       - name: Build & Push Image
         run: |
-          $GITHUB_WORKSPACE/kaniko-executor \
-            --dockerfile=Dockerfile \
+          kaniko-executor \
+            --dockerfile=$GITHUB_WORKSPACE/Dockerfile \
             --context=$GITHUB_WORKSPACE \
             --destination=dans9881/flask-ml-app:latest \
-            --docker-config=$GITHUB_WORKSPACE/.kaniko/.docker \
+            --destination=dans9881/flask-ml-app:${{ github.sha }} \
             --verbosity=info
