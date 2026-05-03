@@ -12,13 +12,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Docker Auth (KANIKO FIX)
+      - name: Setup Docker Auth
         run: |
-          mkdir -p /kaniko/.docker
+          mkdir -p $GITHUB_WORKSPACE/.docker
 
           AUTH=$(echo -n "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" | base64)
 
-          cat <<EOF > /kaniko/.docker/config.json
+          cat <<EOF > $GITHUB_WORKSPACE/.docker/config.json
           {
             "auths": {
               "https://index.docker.io/v1/": {
@@ -27,6 +27,16 @@ jobs:
             }
           }
           EOF
+
+      - name: Inject Auth to Kaniko
+        run: |
+          mkdir -p /kaniko/.docker
+          cp $GITHUB_WORKSPACE/.docker/config.json /kaniko/.docker/config.json
+
+      - name: Debug (optional)
+        run: |
+          ls -lah /kaniko/.docker
+          cat /kaniko/.docker/config.json
 
       - name: Build & Push Image
         run: |
