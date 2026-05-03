@@ -1,13 +1,31 @@
-name: test-anzayyymabar
+name: build-and-push
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  test:
+  build:
     runs-on: self-hosted
 
     steps:
-      - name: test
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Docker auth
         run: |
-          whoami
-          kubectl get pods -A
+          mkdir -p $HOME/.docker
+          echo '${{ secrets.DOCKER_CONFIG_JSON }}' > $HOME/.docker/config.json
+
+      - name: Build & Push image with Kaniko
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/workspace \
+            -v $HOME/.docker:/kaniko/.docker \
+            gcr.io/kaniko-project/executor:latest \
+            --dockerfile=Dockerfile \
+            --context=dir:///workspace \
+            --destination=docker.io/dans9881/flask-ml:${{ github.sha }} \
+            --cache=true \
+            --cache-repo=docker.io/dans9881/cache
