@@ -1,4 +1,4 @@
-name: Build Image (Kaniko)
+name: Build Image only kaniko
 
 on:
   push:
@@ -33,7 +33,7 @@ jobs:
       - name: Download Kaniko Executor
         run: |
           echo "import urllib.request
-          url = 'https://github.com/GoogleContainerTools/kaniko/releases/latest/download/executor-linux-amd64'
+          url = 'https://github.com/GoogleContainerTools/kaniko/releases/download/v1.23.2/executor-linux-amd64'
           output = '${GITHUB_WORKSPACE}/kaniko-executor'
           urllib.request.urlretrieve(url, output)" > download.py
 
