@@ -2,7 +2,7 @@ name: Build Image (Kaniko)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -14,11 +14,11 @@ jobs:
 
       - name: Setup Docker Auth
         run: |
-          mkdir -p $GITHUB_WORKSPACE/.docker
+          mkdir -p /kaniko/.docker
 
           AUTH=$(echo -n "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" | base64)
 
-          cat <<EOF > $GITHUB_WORKSPACE/.docker/config.json
+          cat <<EOF > /kaniko/.docker/config.json
           {
             "auths": {
               "https://index.docker.io/v1/": {
@@ -28,34 +28,13 @@ jobs:
           }
           EOF
 
-      - name: Inject Auth to Kaniko
-        run: |
-          mkdir -p /kaniko/.docker
-          cp $GITHUB_WORKSPACE/.docker/config.json /kaniko/.docker/config.json
-
-      - name: Debug (optional)
-        run: |
-          ls -lah /kaniko/.docker
+          echo "=== CHECK CONFIG ==="
           cat /kaniko/.docker/config.json
-      
-      - name: DEBUG KANIKO FS
+
+      - name: Debug Secrets
         run: |
-          echo "== WHOAMI =="
-          whoami
-
-          echo "== ROOT FS =="
-          ls -lah /
-
-          echo "== /kaniko =="
-          ls -lah /kaniko || true
-
-          echo "== CREATE TEST FILE =="
-          mkdir -p /kaniko/.docker
-          echo "test" > /kaniko/.docker/test.txt
-
-          echo "== VERIFY =="
-          ls -lah /kaniko/.docker
-          cat /kaniko/.docker/test.txt
+          echo "USERNAME: ${{ secrets.DOCKER_USERNAME }}"
+          echo "PASS LENGTH: $(echo -n "${{ secrets.DOCKER_PASSWORD }}" | wc -c)"
 
       - name: Build & Push Image
         run: |
