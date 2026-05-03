@@ -8,6 +8,9 @@ jobs:
   build:
     runs-on: self-hosted
 
+    env:
+      DOCKER_CONFIG: /kaniko/.docker
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,7 +22,7 @@ jobs:
           cat <<EOF > /kaniko/.docker/config.json
           {
             "auths": {
-              "index.docker.io": {
+              "https://index.docker.io/v1/": {
                 "username": "${{ secrets.DOCKER_USERNAME }}",
                 "password": "${{ secrets.DOCKER_PASSWORD }}"
               }
@@ -30,11 +33,11 @@ jobs:
           echo "=== CONFIG ==="
           cat /kaniko/.docker/config.json
 
-      - name: Build & Push (Kaniko)
+      - name: Build & Push
         run: |
           /usr/local/bin/kaniko-executor \
             --dockerfile=$GITHUB_WORKSPACE/Dockerfile \
             --context=$GITHUB_WORKSPACE \
-            --destination=dans9881/flask-ml-app:latest \
-            --destination=dans9881/flask-ml-app:${{ github.sha }} \
+            --destination=index.docker.io/dans9881/flask-ml-app:latest \
+            --destination=index.docker.io/dans9881/flask-ml-app:${{ github.sha }} \
             --verbosity=debug
