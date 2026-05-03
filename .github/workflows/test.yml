@@ -2,7 +2,7 @@ name: Build Image (Kaniko)
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -12,10 +12,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Docker Auth
+      - name: Setup Docker Auth (KANIKO FIX)
         run: |
           mkdir -p /kaniko/.docker
-          AUTH=$(echo -n "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" | base64 | tr -d '\n')
+
+          AUTH=$(echo -n "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" | base64)
 
           cat <<EOF > /kaniko/.docker/config.json
           {
@@ -27,14 +28,11 @@ jobs:
           }
           EOF
 
-      - name: Build & Push Image (Kaniko)
+      - name: Build & Push Image
         run: |
           /usr/local/bin/kaniko-executor \
             --dockerfile=$GITHUB_WORKSPACE/Dockerfile \
             --context=$GITHUB_WORKSPACE \
             --destination=dans9881/flask-ml-app:latest \
             --destination=dans9881/flask-ml-app:${{ github.sha }} \
-            --cache=true \
-            --cache-repo=dans9881/flask-ml-app \
-            --snapshot-mode=redo \
             --verbosity=info
