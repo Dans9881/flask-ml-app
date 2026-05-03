@@ -13,8 +13,8 @@ jobs:
 
       - name: Setup Docker Auth
         run: |
-          mkdir -p /kaniko/.docker
-          cat <<EOF > /kaniko/.docker/config.json
+          mkdir -p /tmp/kaniko/.docker
+          cat <<EOF > /tmp/kaniko/.docker/config.json
           {
             "auths": {
               "https://index.docker.io/v1/": {
@@ -27,12 +27,14 @@ jobs:
 
       - name: Download Kaniko
         run: |
-          wget -q -O /kaniko-executor https://github.com/GoogleContainerTools/kaniko/releases/latest/download/executor-linux-amd64
-          chmod +x /kaniko-executor
+          wget -q -O /tmp/kaniko-executor https://github.com/GoogleContainerTools/kaniko/releases/latest/download/executor-linux-amd64
+          chmod +x /tmp/kaniko-executor
 
       - name: Build & Push
         run: |
-          /kaniko-executor \
+          /tmp/kaniko-executor \
             --dockerfile=Dockerfile \
-            --context=. \
-            --destination=dans9881/flask-ml-app:latest
+            --context=$PWD \
+            --destination=dans9881/flask-ml-app:latest \
+            --docker-config=/tmp/kaniko/.docker \
+            --verbosity=info
