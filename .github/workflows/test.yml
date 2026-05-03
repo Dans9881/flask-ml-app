@@ -27,7 +27,7 @@ jobs:
 
       - name: Download Kaniko
         run: |
-          wget -q -O $GITHUB_WORKSPACE/kaniko-executor https://github.com/GoogleContainerTools/kaniko/releases/latest/download/executor-linux-amd64
+          busybox wget -O $GITHUB_WORKSPACE/kaniko-executor https://github.com/GoogleContainerTools/kaniko/releases/latest/download/executor-linux-amd64
           chmod +x $GITHUB_WORKSPACE/kaniko-executor
 
       - name: Build & Push
