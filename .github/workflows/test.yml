@@ -1,4 +1,4 @@
-name: Build & Push Image (Kaniko K8s)
+name: Build & Push Image (Kaniko)
 
 on:
   push:
