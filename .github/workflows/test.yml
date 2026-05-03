@@ -33,4 +33,5 @@ jobs:
             --context=$GITHUB_WORKSPACE \
             --destination=dans9881/flask-ml-app:latest \
             --destination=dans9881/flask-ml-app:${{ github.sha }} \
+            --docker-config=$GITHUB_WORKSPACE/.kaniko/.docker \
             --verbosity=info
