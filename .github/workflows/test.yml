@@ -37,6 +37,25 @@ jobs:
         run: |
           ls -lah /kaniko/.docker
           cat /kaniko/.docker/config.json
+      
+      - name: DEBUG KANIKO FS
+        run: |
+          echo "== WHOAMI =="
+          whoami
+
+          echo "== ROOT FS =="
+          ls -lah /
+
+          echo "== /kaniko =="
+          ls -lah /kaniko || true
+
+          echo "== CREATE TEST FILE =="
+          mkdir -p /kaniko/.docker
+          echo "test" > /kaniko/.docker/test.txt
+
+          echo "== VERIFY =="
+          ls -lah /kaniko/.docker
+          cat /kaniko/.docker/test.txt
 
       - name: Build & Push Image
         run: |
