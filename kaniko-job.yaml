@@ -43,4 +43,4 @@ spec:
 
         - name: docker-config
           secret:
-            secretName: docker-config
+            secretName: dockerhub-secret
