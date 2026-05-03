@@ -1,4 +1,4 @@
-name: Build Image (Kaniko)
+name: Build Image KANIKO
 
 on:
   push:
