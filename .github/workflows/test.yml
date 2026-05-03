@@ -9,7 +9,8 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Docker Auth
         run: |
@@ -25,12 +26,21 @@ jobs:
           }
           EOF
 
-      - name: Download Kaniko
+      - name: Check Python
         run: |
-          busybox wget -O $GITHUB_WORKSPACE/kaniko-executor https://github.com/GoogleContainerTools/kaniko/releases/latest/download/executor-linux-amd64
+          python3 --version
+
+      - name: Download Kaniko Executor
+        run: |
+          echo "import urllib.request
+          url = 'https://github.com/GoogleContainerTools/kaniko/releases/latest/download/executor-linux-amd64'
+          output = '${GITHUB_WORKSPACE}/kaniko-executor'
+          urllib.request.urlretrieve(url, output)" > download.py
+
+          python3 download.py
           chmod +x $GITHUB_WORKSPACE/kaniko-executor
 
-      - name: Build & Push
+      - name: Build & Push Image
         run: |
           $GITHUB_WORKSPACE/kaniko-executor \
             --dockerfile=Dockerfile \
