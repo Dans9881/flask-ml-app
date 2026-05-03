@@ -8,12 +8,8 @@ jobs:
   build:
     runs-on: self-hosted
 
-    container:
-      image: gcr.io/kaniko-project/executor:latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Docker Auth
         run: |
@@ -29,10 +25,14 @@ jobs:
           }
           EOF
 
-      - name: Build & Push Image
+      - name: Download Kaniko
         run: |
-          /kaniko/executor \
+          wget -q -O /kaniko-executor https://github.com/GoogleContainerTools/kaniko/releases/latest/download/executor-linux-amd64
+          chmod +x /kaniko-executor
+
+      - name: Build & Push
+        run: |
+          /kaniko-executor \
             --dockerfile=Dockerfile \
             --context=. \
-            --destination=dans9881/flask-ml-app:latest \
-            --verbosity=info
+            --destination=dans9881/flask-ml-app:latest
