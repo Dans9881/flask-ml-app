@@ -31,9 +31,13 @@ jobs:
       - name: Build & Push with Kaniko
         run: |
           export DOCKER_CONFIG=/tmp/.docker
-          kaniko-executor \
-            --context $GITHUB_WORKSPACE \
-            --dockerfile $GITHUB_WORKSPACE/Dockerfile \
+
+          echo "Workspace: $GITHUB_WORKSPACE"
+          ls -lah $GITHUB_WORKSPACE
+
+          /usr/local/bin/kaniko-executor \
+            --context=dir://$GITHUB_WORKSPACE \
+            --dockerfile=$GITHUB_WORKSPACE/Dockerfile \
             --destination=dans9881/flask-ml-app:latest \
             --destination=dans9881/flask-ml-app:${{ github.sha }} \
-            --verbosity=info
+            --verbosity=debug
