@@ -27,7 +27,14 @@ jobs:
           export IMAGE_TAG=${{ github.sha }}
           export JOB_NAME=kaniko-build-${{ github.run_id }}
 
-          envsubst < k8s/infra/ci-runner/base/kaniko-job.yaml \
+          FILE="k8s/infra/ci-runner/base/kaniko-job.yaml"
+
+          if [ ! -f "$FILE" ]; then
+            echo "File not found: $FILE"
+            exit 1
+          fi
+
+          envsubst < $FILE \
           | sed "s/name: kaniko-build/name: $JOB_NAME/g" \
           | kubectl apply -f -
 
