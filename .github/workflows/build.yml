@@ -1,4 +1,4 @@
-name: Build & Push Image KANIKO
+name: Build & Push Image KANIKOssssss
 
 on:
   push:
